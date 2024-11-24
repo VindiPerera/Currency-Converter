@@ -1,20 +1,72 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer, useNavigationState } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LandingPage from "./src/components/LandingPage";
+import CurrencyConverter from "./src/components/CurrencyConverter";
+import Home from "./src/components/Home";
+import NavigationBar from "./src/components/NavigationBar";
+import Settings from "./src/components/Settings";
+import Profile from "./src/components/Profile";
 
-export default function App() {
+
+
+
+const Stack = createNativeStackNavigator();
+
+const AppNavigator = () => {
+  // Get the current route name
+  const routeName = useNavigationState((state) => {
+    // Check if state and its routes are defined
+    if (state && state.routes && state.routes[state.index]) {
+      return state.routes[state.index].name;
+    }
+    return null; // Return null or a default route name if undefined
+  });
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+    <>
+      <Stack.Navigator initialRouteName="LandingPage">
+        <Stack.Screen
+          name="LandingPage"
+          component={LandingPage}
+          options={{ headerShown: false }} // Hide the navigation bar on LandingPage
+        />
+        <Stack.Screen
+          name="CurrencyConverter"
+          component={CurrencyConverter}
+          options={{ title:"" }} 
+        />
+         <Stack.Screen
+          name="Settings"
+          component={Settings}
+          options={{ title:"Settings" }} 
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{ title:"Profile" }} 
+        />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false}} 
+        />
+      </Stack.Navigator>
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+      {/* Show NavigationBar */}
+      {(routeName === "Home" || routeName === "CurrencyConverter" || routeName === "Settings"|| routeName === "Profile") && <NavigationBar />}
+    </>
+  );
+};
+
+const App = () => {
+  return (
+   
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
+  
+  );
+};
+
+export default App;
