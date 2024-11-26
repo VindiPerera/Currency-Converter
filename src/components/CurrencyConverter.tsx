@@ -1,6 +1,7 @@
-import React, { useState,useEffect} from "react";
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator,TouchableOpacity ,ScrollView} from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { View, Text, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import { ThemeContext } from "../context/ThemeContext"; 
 
 const CurrencyConverter = () => {
   const [amount, setAmount] = useState("");
@@ -9,7 +10,7 @@ const CurrencyConverter = () => {
   const [convertedAmount, setConvertedAmount] = useState("");
   const [openBase, setOpenBase] = useState(false);
   const [openTarget, setOpenTarget] = useState(false);
-  const [loading, setLoading] = useState(false); // State for loading
+  const [loading, setLoading] = useState(false); 
 
   const currencies = [
     { label: "🇺🇸 USD", value: "USD" },
@@ -37,7 +38,7 @@ const CurrencyConverter = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setWidgetIndex((prevIndex) => (prevIndex + 1) % widgetContents.length);
-    }, 5000); // Change every 5 seconds
+    }, 5000); 
     return () => clearInterval(interval);
   }, []);
 
@@ -47,7 +48,7 @@ const CurrencyConverter = () => {
       return;
     }
 
-    setLoading(true); // Start loading before the API call
+    setLoading(true);
 
     try {
       const response = await fetch(
@@ -76,102 +77,112 @@ const CurrencyConverter = () => {
     }
   };
 
+
+  const { styles: themeStyles, isDarkMode } = useContext(ThemeContext);
+
   return (
-    
-    <View style={styles.container}>
-      {/* Card Section */}
-     
-      {/* Dynamic Widget */}
+    <View style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}>
+      <View style={[styles.header, { backgroundColor: themeStyles.backgroundColor }]}>
+      <Text style={[styles.Text1, { color: themeStyles.textColor }]}>Currency Converter</Text>
+      </View>
+  
       <View style={[styles.card, { backgroundColor: widgetContents[widgetIndex].color }]}>
-        <Text style={styles.cardText}>{widgetContents[widgetIndex].text}</Text>
-        <Text style={styles.cardSubtext}>{widgetContents[widgetIndex].subtext}</Text>
+        <Text style={[styles.cardText, { color: themeStyles.textColor }]}>{widgetContents[widgetIndex].text}</Text>
+        <Text style={[styles.cardSubtext, { color: themeStyles.textColor }]}>{widgetContents[widgetIndex].subtext}</Text>
 
-
-        {/* Dots Indicator */}
-      <View style={styles.dotsContainer}>
-        {widgetContents.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.dot,
-              widgetIndex === index && styles.activeDot, // Highlight active dot
-            ]}
-          />
-        ))}
+        
+        <View style={styles.dotsContainer}>
+          {widgetContents.map((_, index) => (
+            <View
+              key={index}
+              style={[styles.dot, widgetIndex === index && styles.activeDot]} // Highlight active dot
+            />
+          ))}
+        </View>
       </View>
 
-      </View>
-      
-
-      <Text style={styles.buttonText}>Enter Amount:</Text>
+      <Text style={[styles.buttonText, { color: themeStyles.textColor }]}>Enter Amount:</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input]}
         placeholder="e.g., 100"
         keyboardType="numeric"
         value={amount}
         onChangeText={setAmount}
       />
 
-      <Text style={styles.buttonText}>Base Currency:</Text>
+      <Text style={[styles.buttonText, { color: themeStyles.textColor }]}>Base Currency:</Text>
       <DropDownPicker
         open={openBase}
         value={baseCurrency}
         items={currencies}
         setOpen={setOpenBase}
         setValue={setBaseCurrency}
-        onOpen={() => setOpenTarget(false)} // Close other dropdown
-        style={styles.dropdown}
-        zIndex={3000} // Higher zIndex to ensure it appears above others
+        onOpen={() => setOpenTarget(false)} 
+        style={[styles.dropdown]}
+        zIndex={3000} 
         zIndexInverse={1000}
       />
 
-      <Text style={styles.buttonText}>Target Currency:</Text>
+      <Text style={[styles.buttonText, { color: themeStyles.textColor }]}>Target Currency:</Text>
       <DropDownPicker
         open={openTarget}
         value={targetCurrency}
         items={currencies}
         setOpen={setOpenTarget}
         setValue={setTargetCurrency}
-        onOpen={() => setOpenBase(false)} // Close other dropdown
-        style={styles.dropdown}
-        zIndex={2000} // Lower zIndex to avoid overlapping the base dropdown
+        onOpen={() => setOpenBase(false)} 
+        style={[styles.dropdown]}
+        zIndex={2000} 
         zIndexInverse={4000}
       />
 
-<TouchableOpacity style={styles.customButton} onPress={handleConvert}>
-  <Text style={styles.buttonT}>Convert</Text>
-</TouchableOpacity>
+      <TouchableOpacity style={styles.customButton} onPress={handleConvert}>
+        <Text style={[styles.buttonT, { color: themeStyles.textColor }]}>Convert</Text>
+      </TouchableOpacity>
+
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
+        <ActivityIndicator size="large" color={themeStyles.linkColor} style={styles.loader} />
       ) : (
         convertedAmount && (
-          <Text style={styles.result}>
+          <Text style={[styles.result, { color: themeStyles.textColor }]}>
             Converted Amount: {convertedAmount} {targetCurrency}
           </Text>
         )
       )}
-      
     </View>
-   
   );
 };
 
 const styles = StyleSheet.create({
+ 
   container: {
-    flex: 2,
-    padding: 20,
-    backgroundColor: "#fff",
+    flex: 1,
+    padding: 15,
+  },
+  header: {
+    padding:10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#dcdcdc",
+    marginTop: 40,
+    marginBottom:15,
   },
   card: {
-    backgroundColor: "#bfecff", // Yellow background for the card
-    padding: 15,
+
+    backgroundColor: "#bfecff", 
     height:120,
     marginBottom: 30,
     marginTop:10,
     borderRadius: 50,
+    padding: 20,
     justifyContent: "center",
     alignItems: "center",
-     // Space below the card
+  
+  },
+  Text1:{
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
   },
   content: {
     padding: 6,
@@ -185,7 +196,7 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 25,
     fontWeight: "bold",
-    color: "#333", // Dark color for the text inside the card
+    color: "#333", 
   },
   dotsContainer: {
     flexDirection: "row",
@@ -206,7 +217,7 @@ const styles = StyleSheet.create({
   Text: {
     fontSize: 12,
     
-    color: "#333", // Dark color for the text inside the card
+    color: "#333", 
   },
   input: {
     borderWidth: 1,
@@ -227,7 +238,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   customButton: {
-    backgroundColor: "#bfecff", // Green color
+    backgroundColor: "#bfecff", 
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 25,
@@ -237,16 +248,16 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5, // Adds shadow on Android
+    elevation: 5, 
   },
   buttonText: {
-    color: "black", // White text
+    color: "black", 
     fontSize: 16,
     fontWeight: "bold",
     marginBottom:10,
   },
   buttonT: {
-    color: "black", // White text
+    color: "black", 
     fontSize: 18,
     fontWeight: "bold",
   },

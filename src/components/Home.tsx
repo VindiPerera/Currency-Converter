@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons"; // Import vector icons
 import { StackNavigationProp } from "@react-navigation/stack";
 import axios from "axios";
-
-
+import { ThemeContext } from "../context/ThemeContext"; // Import ThemeContext
 
 type RootStackParamList = {
   Profile: undefined;
@@ -19,6 +18,9 @@ type HomePageProps = {
 const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   const [currencyRates, setCurrencyRates] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // Use the ThemeContext to access current theme
+  const { styles: themeStyles, isDarkMode } = useContext(ThemeContext); // Access the theme
 
   // Fetch live currency rates
   useEffect(() => {
@@ -40,48 +42,49 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: themeStyles.backgroundColor }]}>
       {/* Top Icons */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: themeStyles.backgroundColor }]}>
         <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-          <Icon name="person-circle" size={30} color="black" />
+          <Icon name="person-circle" size={30} color={themeStyles.textColor} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-          <Icon name="settings" size={30} color="black" />
+          <Icon name="settings" size={30} color={themeStyles.textColor} />
         </TouchableOpacity>
       </View>
 
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.content}>
-      <Text style={styles.Title}>Welcome!!</Text>
+        <Text style={[styles.Title, { color: themeStyles.textColor }]}>Welcome!!</Text>
+
         {/* Currency Rates Widget */}
-        <View style={styles.widget}>
-          <Text style={styles.widgetTitle}>Live Currency Rates</Text>
+        <View style={[styles.widget, { backgroundColor: themeStyles.cardBackground, borderColor: themeStyles.linkColor }]}>
+          <Text style={[styles.widgetTitle, { color: themeStyles.textColor }]}>Live Currency Rates</Text>
           {loading ? (
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color={themeStyles.linkColor} />
           ) : (
             <>
               {/* Display Rates with Flags */}
               <View style={styles.currencyRow}>
-                <Text style={styles.currencyText}>USD → EUR 🇪🇺: {currencyRates?.EUR || 'Loading...'} </Text>
-                <Text style={styles.currencyText}>USD → GBP 🇬🇧: {currencyRates?.GBP || 'Loading...'} </Text>
+                <Text style={[styles.currencyText, { color: themeStyles.textColor }]}>USD → EUR 🇪🇺: {currencyRates?.EUR || 'Loading...'} </Text>
+                <Text style={[styles.currencyText, { color: themeStyles.textColor }]}>USD → GBP 🇬🇧: {currencyRates?.GBP || 'Loading...'} </Text>
               </View>
               <View style={styles.currencyRow}>
-                <Text style={styles.currencyText}>USD → JPY 🇯🇵: {currencyRates?.JPY || 'Loading...'} </Text>
-                <Text style={styles.currencyText}>USD → CAD 🇨🇦: {currencyRates?.CAD || 'Loading...'} </Text>
+                <Text style={[styles.currencyText, { color: themeStyles.textColor }]}>USD → JPY 🇯🇵: {currencyRates?.JPY || 'Loading...'} </Text>
+                <Text style={[styles.currencyText, { color: themeStyles.textColor }]}>USD → CAD 🇨🇦: {currencyRates?.CAD || 'Loading...'} </Text>
               </View>
               <View style={styles.currencyRow}>
-                <Text style={styles.currencyText}>USD → AUD 🇦🇺: {currencyRates?.AUD || 'Loading...'} </Text>
-                <Text style={styles.currencyText}>USD → CHF 🇨🇭: {currencyRates?.CHF || 'Loading...'} </Text>
+                <Text style={[styles.currencyText, { color: themeStyles.textColor }]}>USD → AUD 🇦🇺: {currencyRates?.AUD || 'Loading...'} </Text>
+                <Text style={[styles.currencyText, { color: themeStyles.textColor }]}>USD → CHF 🇨🇭: {currencyRates?.CHF || 'Loading...'} </Text>
               </View>
             </>
           )}
         </View>
 
         {/* News Section */}
-        <View style={styles.widget}>
-          <Text style={styles.widgetTitle}>Finance News</Text>
-          <Text style={styles.widgetContent}>
+        <View style={[styles.widget, { backgroundColor: themeStyles.cardBackground, borderColor: themeStyles.linkColor }]}>
+          <Text style={[styles.widgetTitle, { color: themeStyles.textColor }]}>Finance News</Text>
+          <Text style={[styles.widgetContent, { color: themeStyles.textColor }]}>
             - "Fed Raises Interest Rates Again"{'\n'}
             - "Crypto Market Sees 20% Surge"{'\n'}
             - "Stock Market Trends to Watch This Week"
@@ -89,9 +92,9 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
         </View>
 
         {/* Tips and Tutorials */}
-        <View style={styles.widget}>
-          <Text style={styles.widgetTitle}>Tips & Tutorials</Text>
-          <Text style={styles.widgetContent}>
+        <View style={[styles.widget, { backgroundColor: themeStyles.cardBackground, borderColor: themeStyles.linkColor }]}>
+          <Text style={[styles.widgetTitle, { color: themeStyles.textColor }]}>Tips & Tutorials</Text>
+          <Text style={[styles.widgetContent, { color: themeStyles.textColor }]}>
             - "How to Use Currency Converter Efficiently"{'\n'}
             - "Understanding Forex Trends"{'\n'}
             - "Best Practices for International Transactions"
@@ -105,14 +108,11 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 20,
-    backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#dcdcdc",
     marginTop: 40,
@@ -121,28 +121,22 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   widget: {
-    backgroundColor: "#f9f9f9",
     borderRadius: 50,
     padding: 20,
     marginBottom: 35,
-    borderColor:"#bfecff",
-    borderWidth:2,
-    borderBlockColor:"#bfecff",
+    borderWidth: 2,
   },
   widgetTitle: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#333",
-    textAlign:"center",
+    textAlign: "center",
   },
   widgetContent: {
     fontSize: 16,
-    color: "#555",
     lineHeight: 20,
-    textAlign:"center",
-    marginBottom:30,
-    
+    textAlign: "center",
+    marginBottom: 30,
   },
   currencyRow: {
     flexDirection: "row",
@@ -151,17 +145,13 @@ const styles = StyleSheet.create({
   },
   currencyText: {
     fontSize: 16,
-    color: "#333",
     lineHeight: 22,
   },
   Title: {
     fontSize: 25,
-    color: "#333",
-    fontWeight:"bold",
-    marginBottom:20,
-  
+    fontWeight: "bold",
+    marginBottom: 20,
   },
-
 });
 
 export default HomePage;

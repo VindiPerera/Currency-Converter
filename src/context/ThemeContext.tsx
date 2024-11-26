@@ -1,51 +1,77 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
-
-type Theme = {
-  backgroundColor: string;
-  textColor: string;
-  widgetBackground: string;
-  widgetBorderColor: string;
-};
+import React, { createContext, useState, useMemo } from 'react';
 
 type ThemeContextType = {
-  theme: Theme;
+  isDarkMode: boolean;
   toggleTheme: () => void;
+  styles: {
+    backgroundColor: string;
+    cardBackground: string;
+    textColor: string;
+    linkColor: string;
+    iconColor: string;
+    buttonBackground: string;
+  buttonTextColor: string;
+  headerBackgroundColor: string;
+  headerTextColor: string;
+    
+  };
 };
 
-const lightTheme: Theme = {
-  backgroundColor: "#fff",
-  textColor: "#333",
-  widgetBackground: "#f9f9f9",
-  widgetBorderColor: "#bfecff",
+const defaultTheme = {
+  isDarkMode: false,
+  toggleTheme: () => {},
+  styles: {
+    backgroundColor: '#f4f4f4',
+    cardBackground: '#fff',
+    textColor: '#000',
+    linkColor: 'blue',
+    navItemColor: "#007BFF",
+    iconColor: "#555",
+    buttonBackground: "#4CAF50",
+    buttonTextColor: "#fff",
+    headerBackgroundColor: "#333",
+    headerTextColor: "#fff",
+  },
 };
 
-const darkTheme: Theme = {
-  backgroundColor: "#333",
-  textColor: "#fff",
-  widgetBackground: "#555",
-  widgetBorderColor: "#888",
-};
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType>(defaultTheme);
 
-export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isDark, setIsDark] = useState(false);
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const toggleTheme = () => setIsDark(!isDark);
+  const theme = useMemo(
+    () => ({
+      isDarkMode,
+      toggleTheme: () => setIsDarkMode((prevMode) => !prevMode),
+      styles: isDarkMode
+        ? {
+            backgroundColor: '#121212',
+            cardBackground: '#333',
+            textColor: '#fff',
+            linkColor: '#1e90ff',
+            iconColor: "#bbb",
+            buttonBackground: "#4CAF50",
+  buttonTextColor: "#fff",
+  headerBackgroundColor: "#f5f5f5",
+  headerTextColor: "#333",
+          }
+        : {
+            backgroundColor: '#f4f4f4',
+            cardBackground: '#fff',
+            textColor: '#000',
+            linkColor: '#bfecff',
+            iconColor: "#555",
+            buttonBackground: "#007BFF",
+            buttonTextColor: "#fff",
+            headerBackgroundColor: "#333",
+            headerTextColor: "#fff",
 
-  const theme = isDark ? darkTheme : lightTheme;
-
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
+           
+          },
+    }),
+    [isDarkMode]
   );
-};
 
-export const useTheme = (): ThemeContextType => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
+  return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
 };

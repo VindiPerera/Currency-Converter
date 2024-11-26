@@ -1,46 +1,76 @@
-import React from "react";
+import React,{useContext} from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons"; // Import vector icons
+import Icon from "react-native-vector-icons/Ionicons";
+import { ThemeContext } from "../context/ThemeContext"; // Import the custom hook
 
 const Profile: React.FC = () => {
+    // Access theme styles from context
+    const { styles: themeStyles, isDarkMode } = useContext(ThemeContext);
+
+ 
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,  { backgroundColor: themeStyles.backgroundColor }]}>
       {/* Profile Header */}
       <View style={styles.header}>
         <Image
           source={{
-            uri: "https://www.w3schools.com/w3images/avatar2.png", // Placeholder profile picture
+            uri: "https://www.w3schools.com/w3images/avatar2.png",
           }}
           style={styles.avatar}
         />
-        <Text style={styles.name}>Namindu Perera</Text>
-        <Text style={styles.bio}>Software Engineer | DevOps Enthusiast</Text>
+        <Text style={[styles.name, { color: themeStyles.textColor }]}>
+          Namindu Perera
+        </Text>
+        <Text style={[styles.bio, { color: themeStyles.textColor }]}>
+          Software Engineer | DevOps Enthusiast
+        </Text>
       </View>
 
       {/* Profile Info */}
-      <View style={styles.infoContainer}>
+      <View
+        style={[
+          styles.infoContainer,
+          { backgroundColor: themeStyles.backgroundColor },
+        ]}
+      >
         <View style={styles.infoRow}>
-          <Icon name="mail-outline" size={20} color="#555" />
-          <Text style={styles.infoText}>vop56@.com</Text>
+          <Icon name="mail-outline" size={20} color={themeStyles.iconColor} />
+          <Text style={[styles.infoText, { color: themeStyles.textColor }]}>
+            vop56@.com
+          </Text>
         </View>
         <View style={styles.infoRow}>
-          <Icon name="call-outline" size={20} color="#555" />
-          <Text style={styles.infoText}>+94 77 123 4567</Text>
+          <Icon name="call-outline" size={20} color={themeStyles.iconColor} />
+          <Text style={[styles.infoText, { color: themeStyles.textColor }]}>
+            +94 77 123 4567
+          </Text>
         </View>
         <View style={styles.infoRow}>
-          <Icon name="location-outline" size={20} color="#555" />
-          <Text style={styles.infoText}>Sri Lanka</Text>
+          <Icon name="location-outline" size={20} color={themeStyles.iconColor} />
+          <Text style={[styles.infoText, { color: themeStyles.textColor }]}>
+            Sri Lanka
+          </Text>
         </View>
       </View>
 
       {/* Action Buttons */}
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.button}>
-          <Icon name="create-outline" size={20} color="#fff" />
-          <Text style={styles.buttonText}>Edit Profile</Text>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: themeStyles.buttonBackground },
+          ]}
+        >
+          <Icon name="create-outline" size={20} color={themeStyles.buttonTextColor} />
+          <Text
+            style={[styles.buttonText, { color: themeStyles.buttonTextColor }]}
+          >
+            Edit Profile
+          </Text>
         </TouchableOpacity>
-        
 
+      
       </View>
     </View>
   );
@@ -49,7 +79,6 @@ const Profile: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
     padding: 20,
   },
   header: {
@@ -65,16 +94,13 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#333",
   },
   bio: {
     fontSize: 16,
-    color: "#666",
     marginTop: 5,
     textAlign: "center",
   },
   infoContainer: {
-    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
     shadowColor: "#000",
@@ -91,7 +117,6 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 16,
-    color: "#555",
     marginLeft: 10,
   },
   actions: {
@@ -100,27 +125,15 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#4CAF50",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 25,
     marginBottom: 20,
+    backgroundColor:"#bfecff",
   },
   buttonText: {
-    color: "#fff",
     fontSize: 16,
     marginLeft: 10,
-  },
-  iconButton: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 50,
-    marginHorizontal: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
 });
 

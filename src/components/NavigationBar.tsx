@@ -1,8 +1,9 @@
-import React from "react";
+import React,{useContext} from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Ionicons from "react-native-vector-icons/Ionicons"; // Install if not already done
+import Ionicons from "react-native-vector-icons/Ionicons"; // Ensure you've installed this package
+import { ThemeContext } from "../context/ThemeContext"; // Import the useTheme hook
 
 type RootStackParamList = {
   Home: undefined;
@@ -12,23 +13,24 @@ type RootStackParamList = {
 
 const NavigationBar: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { styles: themeStyles, isDarkMode, } = useContext(ThemeContext); // Access the theme
 
   return (
-    <View style={styles.navBar}>
+    <View style={[styles.navBar,  { backgroundColor: themeStyles.backgroundColor }]}>
       <TouchableOpacity
         style={styles.navItem}
         onPress={() => navigation.navigate("Home")}
       >
-        <Ionicons name="home-outline" size={24} color="#007BFF" />
-        <Text style={styles.navText}>Home</Text>
+        <Ionicons name="home-outline" size={24} style={[styles.navItem, { color: themeStyles.textColor }]} />
+        <Text style={[styles.navText, { color: themeStyles.textColor }]}>Home</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.navItem}
         onPress={() => navigation.navigate("CurrencyConverter")}
       >
-        <Ionicons name="cash-outline" size={24} color="#007BFF" />
-        <Text style={styles.navText}>Currency</Text>
+        <Ionicons name="cash-outline" size={24} style={[styles.navItem, { color: themeStyles.textColor }]} />
+        <Text style={[styles.navText, { color: themeStyles.textColor }]}>Currency</Text>
       </TouchableOpacity>
 
       {/* Add more navigation items here if needed */}
@@ -38,12 +40,10 @@ const NavigationBar: React.FC = () => {
 
 const styles = StyleSheet.create({
   navBar: {
-    
     zIndex: 50,
     width: "100%",
     height: 64,
     transform: [{ translateX: "-50%" }],
-    backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: "#e5e7eb",
     borderRadius: 9999,
@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     paddingHorizontal: 10,
-    
   },
   navItem: {
     alignItems: "center",
@@ -62,7 +61,6 @@ const styles = StyleSheet.create({
   },
   navText: {
     fontSize: 12,
-    color: "#007BFF",
     marginTop: 4,
   },
 });
